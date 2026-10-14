@@ -1,0 +1,3 @@
+import {readFile} from 'node:fs/promises';
+import {getPool} from './db.js';
+export async function migrate(){const pool=await getPool();const exists=(await pool.request().query("SELECT OBJECT_ID('dbo.Raffles','U') Id")).recordset[0].Id;const files=exists?['migration_v2.sql','migration_accounts.sql','migration_community.sql']:['schema.sql','migration_v2.sql','migration_accounts.sql','migration_community.sql'];for(const name of files){const source=await readFile(new URL(`../sql/${name}`,import.meta.url),'utf8');for(const batch of source.split(/^GO\s*$/gmi)){if(batch.trim())await pool.request().query(batch);}}}

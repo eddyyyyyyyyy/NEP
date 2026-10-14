@@ -1,0 +1,3 @@
+import {useState} from 'react';
+import {organizerEntries} from './api';
+export default function OrganizerEntries({code}){const [entries,setEntries]=useState(null),[error,setError]=useState('');return <details onToggle={e=>{if(e.currentTarget.open&&!entries)organizerEntries(code).then(setEntries).catch(e=>setError(e.message));}}><summary>Inscripciones y pagos</summary>{error&&<p>{error}</p>}{entries?.map((entry,index)=><div key={index}><b>{entry.ParticipantName}</b><small>{entry.Email}</small><p>{entry.TicketCount} boletos · RD$ {Number(entry.TotalAmount).toFixed(2)} · {entry.Status}</p><small>{entry.PaidAt&&new Date(entry.PaidAt).toLocaleString('es-DO')} · {entry.PaymentState}</small></div>)}{entries?.length===0&&<p>Aún no hay inscripciones.</p>}</details>;}
